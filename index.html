@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071517">
+  <meta name="description" content="Steal three relics from a lightless vault. Every sonar pulse reveals a way forward — and tells something where you are. Play solo or together on one device.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Echo Vault — The dark is listening.</title>
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="i-sonar" viewBox="0 0 32 32"><circle cx="16" cy="16" r="3"/><circle cx="16" cy="16" r="9"/><path d="M16 1a15 15 0 1 1-15 15M16 1v6M1 16h6"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5zM15 8q6 4 0 8m3-11q9 7 0 14"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 4v16M16 4v16"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M3 9V3h6m6 0h6v6m0 6v6h-6M9 21H3v-6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M3 12h17m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-relic" viewBox="0 0 24 24"><path d="m12 2 9 10-9 10L3 12Z M12 2v20M3 12h18"/></symbol>
+    <symbol id="i-decoy" viewBox="0 0 24 24"><path d="m8 8 8 8m-1-10 3-3m-7 1V1m9 8h3M5 10a6 6 0 1 0 9 9Z"/></symbol>
+    <symbol id="i-foot" viewBox="0 0 24 24"><path d="M8 14c-5-2-2-12 1-12s4 10-1 12ZM17 22c-5-2-2-12 1-12s4 10-1 12ZM7 17v3m10-15V2"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+  </defs></svg>
+  <main id="menu" class="screen menu-screen">
+    <canvas id="atmosphere" aria-hidden="true"></canvas>
+    <div class="menu-grain" aria-hidden="true"></div>
+    <header class="masthead">
+      <div class="brand"><svg><use href="#i-sonar"/></svg><span>LUKAS GAME<span class="brand-sub">INDEPENDENT EXPEDITIONS</span></span></div>
+      <div class="mast-actions"><span class="online-label"><i></i> SIGNAL FOUND</span><button class="icon-button sound-button" aria-label="Turn sound on" title="Sound"><svg><use href="#i-volume"/></svg><span class="sound-slash" aria-hidden="true"></span></button></div>
+    </header>
+    <div class="menu-content">
+      <section class="intro">
+        <div class="eyebrow"><span class="tiny-line"></span> A SONAR STEALTH EXPEDITION</div>
+        <h1>ECHO<br><span>VAULT</span><b class="title-dot">.</b></h1>
+        <p class="tagline">The dark is listening.</p>
+        <p class="premise">Three relics. One way out.<br>Use sound to see. Stay quiet to survive.</p>
+        <div class="setup">
+          <div class="mode-switch" role="group" aria-label="Players">
+            <button class="mode selected" data-mode="solo" aria-pressed="true"><span class="mode-number">01</span> SOLO RUN</button>
+            <button class="mode" data-mode="duo" aria-pressed="false"><span class="mode-number">02</span> CO-OP</button>
+          </div>
+          <p id="modeDescription" class="mode-description">Just you, a sonar, and whatever is down there.</p>
+          <div class="depth-row"><label for="difficulty">VAULT DEPTH</label><select id="difficulty"><option value="scout">Scout · forgiving</option><option value="standard" selected>Standard · tense</option><option value="deep">Deep vault · relentless</option></select></div>
+          <button id="startButton" class="primary-button"><span>ENTER THE VAULT</span><svg><use href="#i-arrow"/></svg></button>
+          <div class="secondary-actions"><button id="helpButton" class="text-button">FIELD GUIDE <span>↗</span></button><button id="installButton" class="text-button">ADD TO HOME SCREEN <span>＋</span></button></div>
+        </div>
+      </section>
+      <div class="scene-caption" aria-hidden="true"><span class="scene-rule"></span><p>SECTOR 07 / BELOW THE SURFACE</p><span class="scene-coordinate">59° N &nbsp; / &nbsp; SIGNAL UNKNOWN</span></div>
+      <div class="scene-note" aria-hidden="true"><span class="crosshair">+</span><p>EVERY ECHO<br>HAS A CONSEQUENCE.</p></div>
+    </div>
+    <footer class="menu-footer"><span><span class="footer-dot"></span> SOUND OPTIONAL. NERVES REQUIRED.</span><span id="bestScore">UNEXPLORED TERRITORY</span><span class="version">EV / 001</span></footer>
+  </main>
+
+  <section id="gameScreen" class="screen game-screen" hidden aria-label="Echo Vault game">
+    <header class="game-hud">
+      <div class="hud-objective"><span class="hud-label" id="objectiveLabel">RECOVER THE RELICS</span><div class="relic-counter"><svg><use href="#i-relic"/></svg><strong id="relicCount">0<span> / 3</span></strong><span id="modeBadge">SOLO</span></div></div>
+      <div class="air-status"><span class="hud-label">OXYGEN</span><strong id="airTime">3:20</strong><div class="air-track"><i id="airFill"></i></div></div>
+      <div class="hud-buttons"><button id="fullscreenButton" class="icon-button" aria-label="Toggle fullscreen" title="Fullscreen"><svg><use href="#i-expand"/></svg></button><button id="pauseButton" class="icon-button" aria-label="Pause game" title="Pause (Escape)"><svg><use href="#i-pause"/></svg></button></div>
+    </header>
+    <div id="viewport" class="viewport"><canvas id="vault" aria-label="Vault playfield. Move with WASD or arrows, use Space for sonar, E for a decoy and Shift to move quietly."></canvas><div class="viewport-corners" aria-hidden="true"></div>
+      <div id="toast" class="game-toast" role="status" aria-live="polite"></div>
+      <div class="coordinates" id="coordinates" aria-hidden="true">SECTOR 07</div>
+      <div id="signalStatus" class="signal-status"><i></i><span>LISTENING</span></div>
+    </div>
+    <div class="control-deck">
+      <div class="runner-controls"><span id="runnerLabel" class="control-label">MOVEMENT <kbd>W A S D</kbd></span><div class="runner-row"><div id="joystick" class="joystick" role="group" aria-label="Touch movement joystick"><span class="joy-axis horizontal"></span><span class="joy-axis vertical"></span><span class="joy-ring"></span><span id="joystickKnob" class="joystick-knob"></span></div><button id="sneakButton" class="sneak-button" aria-pressed="false"><svg><use href="#i-foot"/></svg><span>QUIET</span><kbd>SHIFT</kbd></button></div></div>
+      <div class="deck-middle"><svg><use href="#i-sonar"/></svg><span id="deckHint">SEE WITH SOUND.<br>MOVE IN SILENCE.</span><div class="threat-track"><i id="threatFill"></i></div></div>
+      <div class="operator-controls"><span id="operatorLabel" class="control-label">EQUIPMENT <kbd>SPACE / E</kbd></span><div class="equipment-row"><button id="decoyButton" class="decoy-button"><svg><use href="#i-decoy"/></svg><span>DECOY <b id="decoyCount">3</b></span></button><button id="pulseButton" class="pulse-button"><span class="pulse-progress" id="pulseProgress"></span><svg><use href="#i-sonar"/></svg><span id="pulseLabel">PULSE</span></button></div></div>
+    </div>
+  </section>
+
+  <dialog id="guideDialog" class="panel-dialog guide-dialog" aria-labelledby="guideTitle">
+    <button class="icon-button close-dialog" aria-label="Close field guide"><svg><use href="#i-close"/></svg></button>
+    <span class="eyebrow">EXPEDITION BRIEF / 001</span><h2 id="guideTitle">Go in quiet.<br>Come out alive.</h2>
+    <p class="guide-lead">Recover all three amber relics, then return to the cyan lift before your oxygen runs out.</p>
+    <div class="guide-steps">
+      <div><span>01</span><p><b>Listen. Look. Remember.</b> Sonar reveals nearby corridors for a few seconds. It also draws the blind creature to where you fired it. Pulse, then move away.</p></div>
+      <div><span>02</span><p><b>Keep your footsteps light.</b> Hold Shift or toggle Quiet to sneak. The creature hears normal footsteps nearby. Your faint trail helps you retrace your route.</p></div>
+      <div><span>03</span><p><b>Give it something else to chase.</b> Decoys make noise ahead of the direction you face, even around corners. Drop one, then go the other way. You start with three.</p></div>
+      <div><span>04</span><p><b>Two people. One expedition.</b> Co-op shares one screen: the runner moves; the operator controls sonar and decoys. Talk to each other. Both roles can use touch at once.</p></div>
+    </div>
+    <div class="guide-legend"><span><i class="legend-relic">◇</i> RELIC</span><span><i class="legend-exit">⊞</i> EXIT LIFT</span><span><i class="legend-air">+</i> +25s AIR</span></div>
+    <div class="keyboard-guide">MOVE <kbd>WASD / ↑↓←→</kbd> &nbsp; SONAR <kbd>SPACE</kbd> &nbsp; DECOY <kbd>E</kbd> &nbsp; PAUSE <kbd>ESC</kbd></div>
+    <p class="guide-small">Every vault is different. The lift is a safe zone. Amber bearing markers point toward relics; after all three are collected, the cyan marker points home. They show direction, not a route. All sound cues have visual equivalents.</p>
+    <button class="primary-button close-dialog"><span>UNDERSTOOD</span><svg><use href="#i-arrow"/></svg></button>
+  </dialog>
+
+  <dialog id="pauseDialog" class="panel-dialog compact-dialog" aria-labelledby="pauseTitle">
+    <span class="eyebrow">SIGNAL ON HOLD</span><h2 id="pauseTitle">Take a breath.</h2><p>The vault can wait. Your oxygen is paused.</p>
+    <button id="resumeButton" class="primary-button">RESUME EXPEDITION <svg><use href="#i-arrow"/></svg></button>
+    <button id="pauseGuideButton" class="outline-button">FIELD GUIDE</button><div class="pause-sound"><button class="icon-button sound-button" aria-label="Turn sound on" title="Sound"><svg><use href="#i-volume"/></svg><span class="sound-slash" aria-hidden="true"></span></button></div><button id="quitButton" class="text-button">RETURN TO SURFACE</button>
+  </dialog>
+
+  <dialog id="resultDialog" class="panel-dialog result-dialog" aria-labelledby="resultTitle">
+    <div class="result-symbol"><svg><use href="#i-relic"/></svg></div><span id="resultEyebrow" class="eyebrow">EXPEDITION COMPLETE</span><h2 id="resultTitle">Back in the light.</h2><p id="resultDescription"></p>
+    <div class="result-stats"><div><span>RELICS</span><strong id="resultRelics"></strong></div><div><span>TIME</span><strong id="resultTime"></strong></div><div><span>SCORE</span><strong id="resultScore"></strong></div></div>
+    <p id="resultTip" class="result-tip"></p><button id="againButton" class="primary-button">A NEW EXPEDITION <svg><use href="#i-arrow"/></svg></button><button id="retryButton" class="outline-button">RETRY THIS VAULT</button><button id="menuButton" class="text-button">RETURN TO SURFACE</button>
+  </dialog>
+
+  <dialog id="installDialog" class="panel-dialog compact-dialog" aria-labelledby="installTitle">
+    <button class="icon-button close-dialog" aria-label="Close installation instructions"><svg><use href="#i-close"/></svg></button><span class="eyebrow">TAKE THE VAULT WITH YOU</span><h2 id="installTitle">One tap away.</h2><p id="installCopy">On iPhone or iPad, open this page in Safari, tap Share, then Add to Home Screen. On Android, use the browser menu and choose Install app or Add to Home screen.</p><p class="guide-small" id="offlineStatus">Once loaded online, the game is saved for offline expeditions.</p><button id="nativeInstallButton" class="primary-button" hidden>INSTALL ECHO VAULT</button><button class="outline-button close-dialog">GOT IT</button>
+  </dialog>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

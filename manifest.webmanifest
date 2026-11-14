@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Echo Vault",
+  "short_name": "Echo Vault",
+  "description": "The dark is listening. A sonar stealth expedition for one or two players.",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071517",
+  "theme_color": "#071517",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

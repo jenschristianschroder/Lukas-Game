@@ -1,0 +1,55 @@
+name: Test and deploy Echo Vault
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript and game invariants
+        run: npm run check && npm test
+      - name: Install browser test tools
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify desktop, mobile, co-op, and offline play
+        run: |
+          python3 -m http.server 4173 --directory .. &
+          BASE_URL=http://127.0.0.1:4173/Lukas-Game/ node tests/browser.mjs
+      - name: Save browser verification screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-verification
+          path: test-results/*.png
+      - name: Stage the static game
+        run: |
+          mkdir _site
+          cp index.html style.css manifest.webmanifest sw.js .nojekyll _site/
+          cp -r src icons _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
